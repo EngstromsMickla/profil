@@ -1,0 +1,375 @@
+{
+ "format": "mickla-beyond-pilots",
+ "formatVersion": 1,
+ "toolVersion": "prototype v0.1",
+ "lang": "en",
+ "saved": "2026-10-15T09:00:00.000Z",
+ "meta": {
+  "company": "Example Construction Ltd (fictional)",
+  "mode": "group",
+  "name": "Management team",
+  "date": "2026-10-15"
+ },
+ "answers": {
+  "CvT1": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "CvT2": {
+   "level": 4,
+   "unsure": false,
+   "note": ""
+  },
+  "CvT3": {
+   "level": 3,
+   "unsure": false,
+   "note": "Site logistics app and digital checklists are used in all regions since 2025."
+  },
+  "CvT4": {
+   "level": 3,
+   "unsure": false,
+   "note": "Dashboards exist, but most decisions in the business units are still based on experience."
+  },
+  "CvT5": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "CvT6": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "CvB1": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "CvB2": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "CvB3": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "CvB4": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "CvE1": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "CvE2": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "CvE3": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "CvE4": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "CvE5": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "MT1": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "MT2": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "MT3": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "MT4": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "MT5": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "MB1": {
+   "level": 4,
+   "unsure": false,
+   "note": ""
+  },
+  "MB2": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "MB3": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "MB4": {
+   "level": 3,
+   "unsure": false,
+   "note": "Central innovation fund with a yearly call; two to three projects funded each year."
+  },
+  "MB5": {
+   "level": 4,
+   "unsure": false,
+   "note": ""
+  },
+  "ME1": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "ME2": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "ME3": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "ME4": {
+   "level": 3,
+   "unsure": false,
+   "note": "Data sharing with subcontractors depends on the project manager."
+  },
+  "ME5": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "ME6": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "ST1": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "ST2": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "ST3": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "SB1": {
+   "level": 2,
+   "unsure": false,
+   "note": "Innovation board meets monthly and decides which pilots continue."
+  },
+  "SB2": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "SB3": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "SE1": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "SE2": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "SE3": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "BT1": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "BT2": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "BT3": {
+   "level": 1,
+   "unsure": false,
+   "note": ""
+  },
+  "BT4": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "BB1": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "BB2": {
+   "level": 2,
+   "unsure": false,
+   "note": "No new business units so far. A service offer for facility data was discussed in 2025."
+  },
+  "BB3": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "BB4": {
+   "level": 1,
+   "unsure": false,
+   "note": ""
+  },
+  "BE1": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "BE2": {
+   "level": 1,
+   "unsure": false,
+   "note": ""
+  },
+  "BE3": {
+   "level": 1,
+   "unsure": false,
+   "note": ""
+  },
+  "BE4": {
+   "level": 1,
+   "unsure": false,
+   "note": ""
+  },
+  "BE5": {
+   "level": 1,
+   "unsure": false,
+   "note": ""
+  },
+  "BE6": {
+   "level": null,
+   "unsure": true,
+   "note": ""
+  },
+  "ClT1": {
+   "level": 4,
+   "unsure": false,
+   "note": ""
+  },
+  "ClT2": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "ClT3": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "ClT4": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "ClT5": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "ClT6": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "ClB1": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "ClB2": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "ClB3": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "ClB4": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "ClB5": {
+   "level": 3,
+   "unsure": false,
+   "note": "The CEO talks about digitalisation, but the responsibility sits with the digital department."
+  },
+  "ClE1": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "ClE2": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "ClE3": {
+   "level": 3,
+   "unsure": false,
+   "note": ""
+  },
+  "ClE4": {
+   "level": null,
+   "unsure": true,
+   "note": ""
+  },
+  "ClE5": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "ClE6": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  },
+  "ClE7": {
+   "level": 2,
+   "unsure": false,
+   "note": ""
+  }
+ }
+}

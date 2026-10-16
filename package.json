@@ -1,0 +1,9 @@
+{
+  "name": "profil",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "kontrollera": "node scripts/kontrollera.mjs"
+  }
+}
