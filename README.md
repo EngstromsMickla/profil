@@ -1,6 +1,6 @@
 # Beyond Pilots
 
-En självskattning av digital transformation för byggentreprenörer, byggd på Kefa Kafulumas licentiatavhandling vid Linköpings universitet (2026). En ledningsgrupp eller en enskild person skattar 72 markörer och får en profil, en jämförelse med tre forskningsprofiler och en rapport att samtala kring.
+En självskattning av digital transformation för byggentreprenörer, på svenska och engelska,, byggd på Kefa Kafulumas licentiatavhandling vid Linköpings universitet (2026). En ledningsgrupp eller en enskild person skattar 72 markörer och får en profil, en jämförelse med tre forskningsprofiler och en rapport att samtala kring.
 
 Adress: https://profil.mickla.se
 

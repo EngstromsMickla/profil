@@ -2,17 +2,20 @@
 // Answers are kept in memory and in this tab's sessionStorage (gone when the tab closes). Nothing is sent anywhere.
 
 import en from "./innehall/en.js";
+import sv from "./innehall/sv.js";
+import ordlista from "./innehall/ordlista.js";
 import {
   DIMS, DOMAINS, allMarkers, cells, levelOf, isDone, cellStats, dimStats, totalStats, profileCentroids,
   nearestProfile, shape, rankCells, compareAnswers, pooledCell, pooledDim, makeSaveFile, readSaveFile,
   fmt, t, heat,
 } from "./modell.js";
 
-const LANGS = { en };
+const LANGS = { en, sv };
+const LANG_KEY = "beyond-pilots-lang";
 const KEY = "beyond-pilots-v1";
 const MAX_FILE = 1024 * 1024;
 
-let L = en;
+let L = LANGS[startLang()] || en;
 let MARKERS = allMarkers(L.markers);
 const CELLS = cells();
 
@@ -24,6 +27,14 @@ const S = {
   compare: [],
   toast: "",
 };
+
+// Language: ?lang= in the address first, then the choice made earlier in this tab, then the browser's language.
+function startLang() {
+  const q = new URLSearchParams(location.search).get("lang");
+  if (q && LANGS[q]) return q;
+  try { const s = sessionStorage.getItem(LANG_KEY); if (s && LANGS[s]) return s; } catch { /* ignore */ }
+  return (navigator.language || "").toLowerCase().startsWith("sv") ? "sv" : "en";
+}
 
 function today() { return new Date().toISOString().slice(0, 10); }
 
@@ -150,7 +161,7 @@ document.getElementById("fil-jamfor").addEventListener("change", async (e) => {
 
 async function loadExample() {
   try {
-    const res = await fetch("exempel/Exempel_bedomning.json");
+    const res = await fetch(L.exampleFile);
     if (!res.ok) throw new Error(String(res.status));
     const d = readSaveFile(await res.text(), L.markers);
     S.meta = d.meta;
@@ -201,12 +212,12 @@ function updateFrame(view) {
   document.getElementById("metod").textContent = L.methodCredit;
   document.getElementById("version").textContent = `${L.toolName} · ${L.version}`;
   const nav = document.getElementById("meny");
-  const items = ["start", "map", "profile", "report", "compare", "guide"];
+  const items = ["start", "map", "profile", "report", "compare", "glossary", "guide"];
   swap(nav, items.map((k) => h("a", { href: "#" + k, "aria-current": view === k ? "page" : null, text: L.nav[k] })),
     Object.keys(LANGS).length > 1 ? langSwitch() : null);
   const st = totalStats(L.markers, S.answers);
   const status = document.getElementById("status");
-  status.hidden = st.done === 0 || view === "start" || view === "guide" || view === "compare";
+  status.hidden = st.done === 0 || ["start", "guide", "compare", "glossary"].includes(view);
   if (!status.hidden) {
     document.getElementById("statustext").textContent = [S.meta.company, S.meta.name].filter(Boolean).join(" · ") || (S.meta.mode === "group" ? L.report.group : L.report.individual);
     document.getElementById("statusantal").textContent = t(L.map.progress, { n: st.done, m: st.n });
@@ -214,9 +225,42 @@ function updateFrame(view) {
 }
 
 function langSwitch() {
-  const sel = h("select", { class: "liten sprak", "aria-label": "Language", onchange: (e) => { L = LANGS[e.target.value]; MARKERS = allMarkers(L.markers); render(); } },
-    Object.values(LANGS).map((x) => h("option", { value: x.lang, selected: x.lang === L.lang, text: x.langName })));
-  return sel;
+  return h("div", { class: "sprak", role: "group", "aria-label": L.langLabel },
+    Object.values(LANGS).map((x) => h("button", { type: "button", lang: x.lang, "aria-pressed": String(x.lang === L.lang), onclick: () => setLang(x.lang), text: x.langName })));
+}
+
+// Switch language and stay in the same place: the same view (the address hash does not depend on language)
+// and the same spot on the page, found through a stable anchor or the element's position in the structure.
+function setLang(code) {
+  if (!LANGS[code] || code === L.lang) return;
+  const spot = findSpot();
+  L = LANGS[code];
+  MARKERS = allMarkers(L.markers);
+  try { sessionStorage.setItem(LANG_KEY, code); } catch { /* ignore */ }
+  history.replaceState(null, "", `?lang=${code}${location.hash}`);
+  render();
+  restoreSpot(spot);
+}
+
+const SPOT_SELECTOR = "#vy section, #vy fieldset, #vy h1, #vy h2, #vy h3, #vy li, #vy tr, #vy .card, #vy .mx-rad, #vy p";
+function headerBottom() { const t = document.querySelector(".topbar"); return t && getComputedStyle(t).position === "sticky" ? t.getBoundingClientRect().bottom : 0; }
+function findSpot() {
+  const top = headerBottom();
+  if (window.scrollY < 10) return null;
+  const visible = (el) => el.getBoundingClientRect().bottom > top + 4;
+  const anchored = [...document.querySelectorAll("#vy [data-anker]")].find(visible);
+  if (anchored) return { key: anchored.dataset.anker, offset: anchored.getBoundingClientRect().top - top };
+  const all = [...document.querySelectorAll(SPOT_SELECTOR)];
+  const i = all.findIndex(visible);
+  return i < 0 ? { y: window.scrollY } : { index: i, offset: all[i].getBoundingClientRect().top - top };
+}
+function restoreSpot(spot) {
+  if (!spot) return;
+  let el = null;
+  if (spot.key) el = [...document.querySelectorAll("#vy [data-anker]")].find((x) => x.dataset.anker === spot.key);
+  else if (spot.index !== undefined) el = document.querySelectorAll(SPOT_SELECTOR)[spot.index];
+  if (!el) { if (spot.y !== undefined) window.scrollTo(0, spot.y); return; }
+  window.scrollTo(0, window.scrollY + el.getBoundingClientRect().top - headerBottom() - spot.offset);
 }
 
 function go(hash) {
@@ -234,9 +278,10 @@ function render() {
   else if (view === "report") content = viewReport();
   else if (view === "compare") content = viewCompare();
   else if (view === "guide") content = viewGuide();
+  else if (view === "glossary") content = viewGlossary();
   else { view = "start"; content = viewStart(); }
   updateFrame(view);
-  swap(vy, S.example && view !== "start" && view !== "guide" && view !== "compare" ? p(L.common.exampleBanner, "note strong") : null, content);
+  swap(vy, S.example && !["start", "guide", "compare", "glossary"].includes(view) ? p(L.common.exampleBanner, "note strong") : null, content);
 }
 
 window.addEventListener("hashchange", () => { render(); window.scrollTo(0, 0); document.getElementById("innehall").focus({ preventScroll: true }); });
@@ -337,8 +382,7 @@ function matrix({ valueOf, labelOf, link }) {
 
 function heatLegend() {
   return h("div", { class: "forklaring" }, h("span", { class: "grupp-namn", text: L.map.legendTitle }),
-    [["h1", "1 to 1.7"], ["h2", "1.8 to 2.4"], ["h3", "2.5 to 3.2"], ["h4", "3.3 to 4"]].map(([c, txt]) =>
-      h("span", {}, h("i", { class: c }), L.lang === "sv" ? txt.replace(/\./g, ",") : txt)));
+    ["h1", "h2", "h3", "h4"].map((c, i) => h("span", {}, h("i", { class: c }), L.heatRanges[i])));
 }
 
 function viewMap() {
@@ -399,7 +443,7 @@ function viewCell(key) {
 function markerCard(m, i, n, onChange) {
   const T = L.cell;
   const a = () => S.answers[m.id] || { level: null, unsure: false, note: "" };
-  const card = h("fieldset", { class: "markor" + (isDone(S.answers, m.id) ? " klar" : "") });
+  const card = h("fieldset", { class: "markor" + (isDone(S.answers, m.id) ? " klar" : ""), "data-anker": m.id });
   const buttons = [];
   const set = (patch) => {
     const next = { ...a(), ...patch };
@@ -642,14 +686,83 @@ function viewGuide() {
     h("h2", { text: L.profile.phasesTitle }),
     p(L.profile.phasesText),
     h("h2", { text: T.storageTitle }),
-    h("ul", {}, T.storage.map((x) => h("li", { text: x }))),
+    h("ul", {}, T.storage.map((x) => h("li", { text: x })), h("li", { text: L.common.userTextNote })),
     h("h2", { text: T.glossaryTitle }),
-    h("dl", { class: "ordlista" }, T.glossary.map(([k, v]) => [h("dt", { text: k }), h("dd", { text: v })])),
+    p(T.glossaryText),
+    h("a", { class: "btn ghost", href: "#glossary", text: T.glossaryGo }),
     h("h2", { text: T.methodTitle }),
     p(L.report.methodText));
+}
+
+// ---------- Glossary ----------
+
+const GL = { q: "", type: "all" };
+
+function glossaryEntries() {
+  const other = L.lang === "sv" ? "en" : "sv";
+  const own = L.lang;
+  const byId = Object.fromEntries(MARKERS.map((m) => [m.id, m]));
+  const out = [];
+  for (const x of ordlista.model) {
+    if (/\(short\)/.test(x.en)) continue;
+    out.push({ key: x.id, type: "model", term: x[own], other: x[other], text: x[own + "Text"] });
+  }
+  for (const [id, x] of Object.entries(ordlista.markers)) {
+    const m = byId[id];
+    out.push({ key: id, type: "marker", term: x[own], other: x[other], text: m ? m.definition : "", link: m ? `#cell-${m.dom}-${m.dim}` : null, id });
+  }
+  for (const x of ordlista.concepts) out.push({ key: x.id, type: "concept", term: x[own], other: x[other], text: x[own + "Text"] });
+  const coll = new Intl.Collator(L.lang, { sensitivity: "base" });
+  return out.sort((a, b) => coll.compare(a.term, b.term));
+}
+
+function glossaryList() {
+  const T = L.glossary;
+  const q = GL.q.trim().toLowerCase();
+  const list = glossaryEntries().filter((e) => (GL.type === "all" || e.type === GL.type)
+    && (!q || [e.term, e.other, e.text, e.id].some((x) => x && x.toLowerCase().includes(q))));
+  const otherLang = L.lang === "sv" ? "en" : "sv";
+  if (!list.length) return [p(t(T.count, { n: 0 }), "hjalp"), p(T.none, "muted")];
+  const groups = [];
+  for (const e of list) {
+    const letter = e.term.charAt(0).toLocaleUpperCase(L.lang);
+    if (!groups.length || groups[groups.length - 1].letter !== letter) groups.push({ letter, items: [] });
+    groups[groups.length - 1].items.push(e);
+  }
+  return [
+    p(t(T.count, { n: list.length }), "hjalp"),
+    groups.map((g) => h("section", { class: "gl-grupp" },
+      h("h2", { class: "gl-bokstav", text: g.letter }),
+      h("dl", { class: "gl-lista" }, g.items.map((e) => h("div", { class: "gl-post", "data-anker": e.key },
+        h("dt", {}, h("span", { class: "gl-term", text: e.term }), h("span", { class: `tag gl-typ gl-${e.type}`, text: T.typeOne[e.type] + (e.id ? " · " + e.id : "") })),
+        h("dd", {},
+          h("span", { class: "gl-annat" }, h("span", { class: "gl-sprak", text: T.otherLang + ": " }), h("span", { lang: otherLang, text: e.other })),
+          e.text ? h("span", { class: "gl-text", text: e.text }) : null,
+          e.link ? h("a", { class: "lank small", href: e.link, text: T.openMarker + " →" }) : null)))))),
+  ];
+}
+
+function viewGlossary() {
+  const T = L.glossary;
+  const listEl = h("div", { class: "gl-resultat" }, glossaryList());
+  const refresh = () => swap(listEl, glossaryList());
+  const types = ["all", "model", "marker", "concept"];
+  const seg = h("div", { class: "segment", role: "group" }, types.map((k) => h("button", {
+    type: "button", "aria-pressed": String(GL.type === k), "data-typ": k,
+    onclick: (e) => { GL.type = k; for (const b of seg.children) b.setAttribute("aria-pressed", String(b.dataset.typ === k)); refresh(); },
+    text: k === "all" ? T.filterAll : T.types[k] })));
+  const search = h("input", { type: "search", class: "sok", placeholder: T.search, "aria-label": T.search, value: GL.q,
+    oninput: (e) => { GL.q = e.target.value; refresh(); } });
+  return h("div", { class: "smal" },
+    h("div", { class: "eyebrow", text: T.eyebrow }),
+    h("h1", { text: T.title }),
+    p(T.lead, "lead"),
+    h("div", { class: "verktyg" }, search, seg),
+    listEl);
 }
 
 // ---------- Start up ----------
 
 restore();
+try { sessionStorage.setItem(LANG_KEY, L.lang); } catch { /* ignore */ }
 render();

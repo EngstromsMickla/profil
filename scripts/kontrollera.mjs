@@ -25,7 +25,7 @@ function gaIgenom(dir) {
 gaIgenom(rot);
 const html = fs.readFileSync(path.join(rot, "index.html"), "utf8");
 if (!/Content-Security-Policy[^>]*default-src 'none'/.test(html)) fel.push("index.html: Content Security Policy saknas");
-for (const f of ["img/mickla.png", "exempel/Exempel_bedomning.json", "CNAME", "innehall/en.js", "innehall/en-markorer.js"]) {
+for (const f of ["img/mickla.png", "exempel/Exempel_bedomning.json", "CNAME", "innehall/en.js", "innehall/en-markorer.js", "innehall/sv.js", "innehall/sv-markorer.js", "innehall/ordlista.js", "exempel/Exempel_bedomning_sv.json"]) {
   if (!fs.existsSync(path.join(rot, f))) fel.push(`saknas: publik/${f}`);
 }
 for (const f of fs.readdirSync(path.join(rot, "exempel"))) if (!/^Exempel_/.test(f)) fel.push(`publik/exempel/${f}: bara påhittade exempelfiler får ligga i repot`);
